@@ -3,7 +3,6 @@ import { connectToDB } from "@/utils/database";
 import Service from '@/models/Service';
 
 export async function GET( request, { params }){
-  console.log(params)
   try {
     await connectToDB();
     const service = await Service.findById(params.id)
