@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { connectToDB } from "@/utils/database";
-import Service from '@/models/Service';
+import { connectToDB } from "../../../../utils/database";
+import Service from '../../../../models/Service';
 
 export async function GET( request, { params }){
   try {

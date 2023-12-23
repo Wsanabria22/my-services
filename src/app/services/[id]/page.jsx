@@ -1,3 +1,3 @@
-import FormService from "../page";
+import FormService from "../form/page";
 
 export default FormService;
