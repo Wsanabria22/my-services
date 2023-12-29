@@ -24,7 +24,7 @@ const NavBar = () => {
   }
 
   return (
-    <div className='flex justify-between px-4 py-2 bg-slate-200'>
+    <div className='flex justify-between px-4 py-2 bg-slate-200 flex-grow'>
       { session?.user && 
       <>
         <Link href="/" className="flex gap-1">

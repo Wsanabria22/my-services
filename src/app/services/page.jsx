@@ -27,7 +27,7 @@ export default async function Services() {
           </button>
         </Link>
       </div>
-      <div className="grid grid-cols-3 gap-2 p-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-2">
         {
           allServices && allServices.map((service) => (
             <ServiceCard service={service} key={service._id}/>

@@ -1,6 +1,6 @@
 const { NextResponse } = require("next/server");
-import Service from '@/models/Service';
-import { connectToDB } from '@/utils/database';
+import Service from '../../../models/Service';
+import { connectToDB } from '../../../utils/database';
 
 
 export async function GET () {
