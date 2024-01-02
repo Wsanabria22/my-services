@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 const FormService = () => {
   const router = useRouter();
   const params = useParams();
+  console.log(params);
   const [service, setService] = useState({
     name: '',
     description: '',
@@ -28,7 +29,7 @@ const FormService = () => {
         router.refresh();
       }
     } catch (error) {
-      console.log(error)
+      console.log('Failed to create service', error)
     }
   };
 
@@ -38,7 +39,7 @@ const FormService = () => {
       const dataService = await response.json()
       setService(dataService)
     } catch (error) {
-      console.log(error)
+      console.log('Failed to fetch service information',error)
     }
   };
 
@@ -52,17 +53,17 @@ const FormService = () => {
       })
       const dataService = await response.json()
       console.log(dataService)
-      router.push('/')
+      router.back()
       router.refresh()
     } catch (error) {
-      console.log(error)
+      console.log('Failed to update service', error)
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if(!params.id) await createService();
-    else updateService();
+    else await updateService();
   };
 
   const handleDelete = async () => {
@@ -70,11 +71,11 @@ const FormService = () => {
       if(window.confirm('Esta seguro de eliminar el servicio?')) {
         const response = await fetch('/api/services/'+params.id,
         { method: 'DELETE'})      
-        router.push('/');
+        router.back();
         router.refresh();
       }
     } catch (error) {
-      console.log(error)
+      console.log('Failed to delete service',error)
     }
   }
 

@@ -21,7 +21,7 @@ const Professionals = async () => {
     <section className='bg-slate-200 rounded-sm py-3 px-2 flex-grow'>
       <div className="bg-slate-100 rounded-sm px-4 py-2 flex justify-between">
         <h2 className="text-lg">Administrar Profesionales</h2>
-        <Link href={'/profesionals/form'}>
+        <Link href={'/professionals/form'}>
           <button className='bg-blue-600 text-white md:font-semibold sm:px-3 sm:py-1.5 hover:bg-blue-300 hover:text-black
             text-sm hover:border-blue-600 border rounded-md font-normal px-2 py-1'>
             Nuevo
