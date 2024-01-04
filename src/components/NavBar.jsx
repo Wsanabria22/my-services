@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const NavBar = () => {
   const { data: session } = useSession();
-  console.log(session);
+  console.log('Session',session);
 
   if(!session) {
     return (

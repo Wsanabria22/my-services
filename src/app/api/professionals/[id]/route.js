@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import Professional from '../../../../models/professional';
 import { connectToDB } from '../../../../utils/database';
 
-export async function GET (request, {params}) {
+export async function GET(request, {params}) {
   try {
     await connectToDB();
     const professional = await Professional.findById(params.id);
@@ -15,21 +15,20 @@ export async function GET (request, {params}) {
   }
 };
 
-export async function PUT (request, {params}) {
+export async function PUT(request, {params}) {
   try {
+    const data = await request.json();
     await connectToDB();
-    const data = request.json();
     const professional = await Professional.findByIdAndUpdate(params.id, data, {new:true});
     if (!professional) return NextResponse.json({message:'Professional not found'}, {status:404})
     return NextResponse.json(professional, {message:'Professional updated successfully'},{status:201})
   } catch (error) {
     console.log('Failed to update professional information', error)
-    return NextResponse.json({message:'Failed to update professional information', error: error},
-      {status: 400})
+    return NextResponse.json({message:'Failed to update professional information', error: error}, {status: 400});
   }
 };
 
-export async function DELETE (request, {params}) {
+export async function DELETE(request, {params}) {
   try {
     await connectToDB();
     const professional = await Professional.findByIdAndDelete(params.id);
