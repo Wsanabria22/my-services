@@ -17,7 +17,6 @@ export async function GET() {
 export async function POST(req, res) {
   try {
     const {firstName, lastName, idNumber, title} = await req.json();
-    console.log(firstName,lastName)
     await connectToDB();
     const newProfessional = new Professional({firstName, lastName, idNumber, title});
     const savedProfessional = await newProfessional.save();

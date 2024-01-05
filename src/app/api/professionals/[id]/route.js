@@ -10,8 +10,7 @@ export async function GET(request, {params}) {
     return NextResponse.json(professional, {status:200})
   } catch (error) {
     console.log('Failed to get professional information', error)
-    return NextResponse.json({message:'Failed to get professional information', error: error},
-      {status: 400})
+    return NextResponse.json({message:'Failed to get professional information', error:error.message}, {status: 400})
   }
 };
 
@@ -24,7 +23,7 @@ export async function PUT(request, {params}) {
     return NextResponse.json(professional, {message:'Professional updated successfully'},{status:201})
   } catch (error) {
     console.log('Failed to update professional information', error)
-    return NextResponse.json({message:'Failed to update professional information', error: error}, {status: 400});
+    return NextResponse.json({message:'Failed to update professional information', error:error.message}, {status: 400});
   }
 };
 
@@ -36,7 +35,7 @@ export async function DELETE(request, {params}) {
     return NextResponse.json(professional, {message:'Professional deleted successfully'},{status:201})
   } catch (error) {
     console.log('Failed to delete professional', error);
-    return NextResponse.json({message:'Failed to delete professional', error}, {status:400})
+    return NextResponse.json({message:'Failed to delete professional', error:error.message}, {status:400})
   }
 };
 

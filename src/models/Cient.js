@@ -32,4 +32,7 @@ const ClientSchema = new Schema({
 },
 {
   timestamps: true,
-}) 
+}) ;
+
+const Client = models.Client || model('Client', ClientSchema);
+export default Client;
