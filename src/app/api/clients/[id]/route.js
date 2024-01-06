@@ -5,9 +5,9 @@ import { NextResponse } from 'next/server';
 export async function GET(request, {params}) {
   try {
     await connectToDB();
-    const Client = await Client.findById(params.id);
-    if (!Client) return NextResponse.json({message:'Client not found'}, {status:404});
-    return NextResponse.json(Client, {status:200})
+    const client = await Client.findById(params.id);
+    if (!client) return NextResponse.json({message:'Client not found'}, {status:404});
+    return NextResponse.json(client, {status:200})
   } catch (error) {
     console.log('Failed to get client information', error);
     return NextResponse.json({message:'Failed to get client information', error:error.message}, {status: 400});

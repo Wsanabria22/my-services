@@ -1,6 +1,6 @@
 'use client'
 import { useParams, useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const FormClient = () => {
   const params = useParams();
@@ -14,12 +14,61 @@ const FormClient = () => {
     email:"" 
   })
 
+  const getClient = async () => {
+    try {
+      const response = await fetch('/api/clients/'+params.id);
+      const dataClient = await response.json();
+      console.log(dataClient);
+      setClient(dataClient);
+    } catch (error) {
+      console.log('Failed to fetch client information', error)
+    }
+  };
+
+  const createClient = async () => {
+    try {
+      const response = await fetch('/api/clients', {
+        method: 'POST',
+        body: JSON.stringify(client),
+        headers: {"Content-Type" : "application/json"}
+      })
+      if(response.ok) {
+        router.back();
+        router.refresh();
+      }
+    } catch (error) {
+      console.log('Failed to create client', error)
+    }
+  };
+
+  const updateClient = async ()=> {
+    try {
+      const response = await fetch(`/api/clients/${params.id}`, 
+      {
+        method:'PUT',
+        body:JSON.stringify(client),
+        headers: {"Content-Type": "application/json"}
+      });
+      const dataClient = await response.json();
+      router.back();
+      router.refresh();
+    } catch (error) {
+      console.log('Failed to update client', error)
+    }
+  };
+
   const handleChange = (e) => {
     setClient({...client, [e.target.name]: e.target.value})
   };
 
-  const handleSubmit = (e) => {
-    
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (!params.id) await createClient()
+      else await updateClient();      
+    } catch (error) {
+      console.log('Failed to create client', error)
+    }
   };
 
   const handleDelete = async () => {
@@ -39,6 +88,11 @@ const FormClient = () => {
     router.back()
     router.refresh()
   };
+
+
+  useEffect(()=>{
+    if(params.id) getClient();
+  },[]);
 
   return (
     <section className='bg-slate-200 rounded-sm py-3 px-2 flex-grow border-blue-600'> 
@@ -95,7 +149,7 @@ const FormClient = () => {
                 No. Celular
               </span>    
             </label> 
-            <input type='text' name='celPhone' placeholder='Especialidad o Cargo...'
+            <input type='text' name='celPhone' placeholder='No de celular o mobil...'
               className="invalid:border-red-500 bg-slate-50 text-sm border rounded border-slate-200 px-2 py-1"  
               onChange={handleChange} value={client.celPhone}
               required>
@@ -108,7 +162,7 @@ const FormClient = () => {
                 Direccion 
               </span>    
             </label> 
-            <input type='text' name='address' placeholder='Especialidad o Cargo...'
+            <input type='text' name='address' placeholder='Direccion...'
               className="invalid:border-red-500 bg-slate-50 text-sm border rounded border-slate-200 px-2 py-1"  
               onChange={handleChange} value={client.address}
               required>
@@ -121,7 +175,7 @@ const FormClient = () => {
                 Correo electronico 
               </span>    
             </label> 
-            <input type='text' name='email' placeholder='Especialidad o Cargo...'
+            <input type='text' name='email' placeholder='Correo electronico...'
               className="invalid:border-red-500 bg-slate-50 text-sm border rounded border-slate-200 px-2 py-1"  
               onChange={handleChange} value={client.email}
               required>
@@ -135,11 +189,15 @@ const FormClient = () => {
             text-sm hover:border-blue-600 border rounded-md font-normal px-2 py-1'>
             { !params.id ? 'Crear' : 'Modificar'}
           </button>
-          <button type='button' onClick={handleDelete}
-            className='bg-red-600 text-white md:font-semibold px-3 py-1.5   hover:bg-red-300 hover:text-black
-            text-sm hover:border-red-600 border rounded-md font-normal'>
-            Eliminar 
-          </button>
+          {
+            params.id &&
+            <button type='button' onClick={handleDelete}
+              className='bg-red-600 text-white md:font-semibold px-3 py-1.5   hover:bg-red-300 hover:text-black
+              text-sm hover:border-red-600 border rounded-md font-normal'>
+              Eliminar 
+            </button>
+          }
+
           <button type='button'onClick={handleBack}
             className='bg-green-600 text-white md:font-semibold px-3 py-1.5 hover:bg-green-300 hover:text-black
             text-sm hover:border-green-600 border rounded-md font-normal'>
