@@ -159,11 +159,14 @@ const FormService = () => {
             text-sm hover:border-blue-600 border rounded-md font-normal px-2 py-1'>
             { !params.id ? 'Crear' : 'Modificar'}
           </button>
-          <button type='button' onClick={handleDelete}
-            className='bg-red-600 text-white md:font-semibold px-3 py-1.5   hover:bg-red-300 hover:text-black
-            text-sm hover:border-red-600 border rounded-md font-normal'>
-            Eliminar 
-          </button>
+          {
+            params.id &&
+            <button type='button' onClick={handleDelete}
+              className='bg-red-600 text-white md:font-semibold px-3 py-1.5   hover:bg-red-300 hover:text-black
+              text-sm hover:border-red-600 border rounded-md font-normal'>
+              Eliminar 
+            </button>
+          }
           <button type='button'onClick={handleBack}
             className='bg-green-600 text-white md:font-semibold px-3 py-1.5 hover:bg-green-300 hover:text-black
             text-sm hover:border-green-600 border rounded-md font-normal'>

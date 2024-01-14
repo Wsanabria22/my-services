@@ -18,7 +18,6 @@ const FormClient = () => {
     try {
       const response = await fetch('/api/clients/'+params.id);
       const dataClient = await response.json();
-      console.log(dataClient);
       setClient(dataClient);
     } catch (error) {
       console.log('Failed to fetch client information', error)
