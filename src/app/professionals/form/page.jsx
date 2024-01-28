@@ -1,6 +1,9 @@
 'use client';
-import { useParams, useRouter } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import Image from 'next/image';
+import { useParams, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+
+const picturePath = require.context('../../../../public/images', true);
 
 const FormProfessional = () => {
   const params = useParams();
@@ -11,6 +14,8 @@ const FormProfessional = () => {
     lastName: "",
     idNumber: "",
     title: "",
+    picturePath:"",
+    picture: "",
   })
 
   const getProfessional = async () => {
@@ -18,6 +23,8 @@ const FormProfessional = () => {
       const response = await fetch('/api/professionals/'+params.id);
       const dataProfessional = await response.json();
       setProfessional(dataProfessional);
+      // const picture = require(professional.picturePath);
+      // setProfessional((prevState)=>({...prevState, picture:prevState.picturePath}))
     } catch (error) {
       console.log('Failed to fetch professional information', error)
     }
@@ -25,6 +32,7 @@ const FormProfessional = () => {
 
   const createProfessional = async () => {
     try {
+      console.log(professional);
       const response = await fetch('/api/professionals', {
         method: 'POST',
         body: JSON.stringify(professional),
@@ -56,8 +64,43 @@ const FormProfessional = () => {
   };
 
   const handleChange = (e) => {
-    setProfessional({...professional, [e.target.name]: e.target.value})
+    setProfessional((prevState)=>({...prevState, [e.target.name]: e.target.value}))
+    if(e.target.name === 'picture') {
+      loadPicture(e.target.files[0]);
+    }
   };
+
+  const loadPicture = (pictureFile) => {
+    if(pictureFile) {
+      const formData = new FormData();
+      formData.append("image", pictureFile);
+      console.log(formData);
+      fetch('/api/pictures',{
+        method:"POST",
+        body: formData,
+        // headers:{"Content-Type": "multipart/form-data"}
+      })
+      .then(response=> response.json())
+      .then(response=> setProfessional((prevState)=>({...prevState, picturePath:response.imagePath})))
+      .catch(error=> console.log('Failed to send picture to API', error)) 
+    }
+  }
+
+  const deletePicture = (pictureName) => {
+    if(pictureName) {
+      const formData = new FormData();
+      formData.append("imageName", pictureName);
+      console.log(formData);
+      fetch('/api/pictures',{
+        method:"DELETE",
+        body: formData,
+        // headers:{"Content-Type": "multipart/form-data"}
+      })
+      .then(response=> response.json())
+      .then(response=> console.log(response.imageName))
+      .catch(error=> console.log('Failed to send picture to API', error)) 
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -73,7 +116,8 @@ const FormProfessional = () => {
     try {
       if(window.confirm('Esta seguro de eliminar el profesional?')) {
         const response = await fetch('/api/professionals/'+params.id,
-        { method: 'DELETE'})      
+        { method: 'DELETE'})    
+        deletePicture(professional.picturePath)
         router.back();
         router.refresh();
       }
@@ -101,8 +145,9 @@ const FormProfessional = () => {
         </h1>
       </div>
       <hr className="bg-blue-300"></hr>
-      <div className="bg-white col-span-8 w-full px-4 py-2"> 
-      <form className='bg-white p-5 w-full flex flex-wrap gap-4 border border-slate-100' onSubmit={handleSubmit}>
+      <div className="bg-white w-full px-4 py-2"> 
+      <form className='bg-white p-5 grid grid-cols-8 w-full ap-4 border border-slate-100' onSubmit={handleSubmit}>
+        <div className='col-span-6'>
           <div className="flex flex-col w-full">
             <label className="block">
               <span className="text-sm text-satoshi font-semibold text-gray-700">
@@ -155,8 +200,27 @@ const FormProfessional = () => {
             </input>
           </div>
 
+          <div className="flex flex-col w-full">
+            <label className="block">
+              <span className="text-sm text-satoshi font-semibold text-gray-700">
+                Foto
+              </span>    
+            </label> 
+            <input type='file' name='picture' placeholder='Fotografia / imagen...'
+              className="invalid:border-red-500 bg-slate-50 text-sm border rounded border-slate-200 px-2 py-1"  
+              onChange={handleChange} value={professional.picture}>
+            </input>
+          </div>
+        </div>
+
+        { professional.picturePath &&
+          <div className='col-span-2 h-auto w-auto m-2 border mb-4 '>
+            <Image src={picturePath(`./${professional.picturePath}`)} alt={professional?.firstName}/>
+          </div>
+        }
+        <div className='col-span-8 mt-2'>
         <hr className="bg-blue-300 border w-full"></hr>
-        <div className='flex justify-between w-full'>
+        <div className='flex justify-between w-full mt-2'>
           <button type='submit'
             className='bg-blue-600 text-white md:font-semibold sm:px-3 sm:py-1.5 hover:bg-blue-300 hover:text-black
             text-sm hover:border-blue-600 border rounded-md font-normal px-2 py-1'>
@@ -176,8 +240,9 @@ const FormProfessional = () => {
             Ir Atras
           </button>
         </div>
-
+        </div>
       </form>
+     
       </div>
     </section>
   )

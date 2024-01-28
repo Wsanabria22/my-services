@@ -25,7 +25,7 @@ const FormService = () => {
       })
       console.log(await response.json())
       if(response.ok) {
-        router.push('/');
+        router.back()
         router.refresh();
       }
     } catch (error) {

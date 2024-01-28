@@ -16,14 +16,14 @@ export async function GET() {
 
 export async function POST(req, res) {
   try {
-    const {firstName, lastName, idNumber, title} = await req.json();
+    const {firstName, lastName, idNumber, title, picturePath} = await req.json();
     await connectToDB();
-    const newProfessional = new Professional({firstName, lastName, idNumber, title});
+    const newProfessional = await new Professional({firstName, lastName, idNumber, title, picturePath});
     const savedProfessional = await newProfessional.save();
     return NextResponse.json(savedProfessional, { status: 201 });
   } catch (error) {
-    console.log("Failed to create a new service", error);
-    return NextResponse.json({message:"Failed to create a new service", error: error.message},
+    console.log("Failed to create a new professional", error);
+    return NextResponse.json({message:"Failed to create a new professional", error: error.message},
      { status: 400 } );
   }
 };

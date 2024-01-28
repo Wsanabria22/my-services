@@ -19,6 +19,9 @@ const ProfessionalSchema = new Schema({
   title: {
     type: String
   },
+  picturePath: {
+    type: String
+  },
 },
 {
   timestamps: true,
