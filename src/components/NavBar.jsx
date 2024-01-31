@@ -10,16 +10,20 @@ const NavBar = () => {
 
   if(!session) {
     return (
-      <div className='flex justify-between px-4 py-2 bg-slate-200'>
-        <Link href="/" className="flex gap-1">
-          <Image src={logo} alt="My-Services" width={30} height={30}/>
-          <p className='font-semibold text-center items-center flex px-1'>My Services</p>
-        </Link>
-        <button className='bg-blue-600 text-white px-3 py-1 rounded-md font-normal 
-           hover:bg-blue-300 hover:text-black hover:border-blue-600 border'
-            onClick={()=> signIn()} >LogIn
-        </button>
-      </div>
+      <header className="w-full absolute z-10">
+        <nav className="max-w-[1440px] mx-auto flex justify-between items-center sm:px-16 px-6 py-4">
+
+          <Link href="/" className="flex gap-1">
+            <Image src={logo} alt="My-Services" width={30} height={30}/>
+            <p className='font-semibold text-center items-center flex px-1'>My Services</p>
+          </Link>
+          <button className='bg-blue-600 text-white px-3 py-1 rounded-md font-normal 
+            hover:bg-blue-300 hover:text-black hover:border-blue-600 border'
+              onClick={()=> signIn()} >LogIn
+          </button>
+
+       </nav>
+      </header>
     )
   }
 

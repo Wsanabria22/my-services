@@ -1,14 +1,20 @@
 import Image from 'next/image'
-import AdminBar from '../components/AdminBar';
+import Hero from '../components/Hero';
 
 export default async function Home() {
 
   return (
-    <main className="bg-blue-50 min-h-screen flex gap-2 p-2">
-      <AdminBar />
-      <section className='bg-slate-200 rounded-sm py-3 px-2 border-purple-950 flex-grow'>
-        Contenido
-      </section>
+
+    <main className="overflow-hidden">
+      <Hero/>
+
+      <div className='mt-12 padding-x padding-y max-width' id='discover'>
+        <div className='home__text-container'>
+          <h1 className='text-3xl font-extrabold'>Catalogo de servicios</h1>
+          <p>Explore los servicios deseados</p>
+        </div>
+      </div>
+
     </main>
   )
 }
