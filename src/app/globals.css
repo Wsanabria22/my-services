@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -45,7 +47,7 @@
 }
 
 .custom-btn {
-  @apply flex flex-row relative justify-center items-center py-3 px-6 outline-none;
+  @apply flex flex-row relative justify-center items-center py-2 px-4 outline-none;
 }
 /* END: General styles */
 
@@ -67,15 +69,82 @@
 }
 
 .hero__image {
-  @apply relative xl:w-full w-[90%] xl:h-full h-[590px] z-0;
+  @apply relative xl:w-full w-[25%] xl:h-full h-[25%] z-0 mr-16 rounded-full;
 }
 
 .hero__image-overlay {
-  @apply absolute xl:-top-24 xl:-right-1/2 -right-1/4 bg-repeat-round -z-10 w-full xl:h-screen h-[590px] overflow-hidden;
+  @apply absolute xl:-top-24 xl:-right-1/2 -right-1/4 bg-hero-bg bg-repeat-round -z-10 w-full xl:h-screen h-[590px] overflow-hidden;
 }
 /* END: Hero styles */
 
+/* START: Home styles */
 
+.home__text-container {
+  @apply flex flex-col items-start justify-start gap-y-2.5 text-black-100;
+}
+
+.home__filters {
+  @apply mt-12 w-full flex-between items-center flex-wrap gap-5;
+}
+
+.home__filter-container {
+  @apply flex justify-start flex-wrap items-center gap-2;
+}
+
+.home__service-wrapper {
+  @apply grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 w-full gap-8 pt-14;
+}
+
+.home__error-container {
+  @apply mt-16 flex justify-center items-center flex-col gap-2;
+}
+/* END: Home styles */
+
+/* START: service Card styles */
+.service-card {
+  @apply flex flex-col p-6 justify-center items-start text-black-100 bg-primary-blue-100 hover:bg-white hover:shadow-md rounded-3xl;
+}
+
+.service-card__content {
+  @apply w-full flex justify-between items-start gap-2;
+}
+
+.service-card__content-title {
+  @apply text-[22px] leading-[26px] font-bold capitalize;
+}
+
+.srvserviceice-card__price {
+  @apply flex mt-6 text-[32px] leading-[38px] font-extrabold;
+}
+
+.service-card__price-dollar {
+  @apply self-start text-[14px] leading-[17px] font-semibold;
+}
+
+.service-card__price-day {
+  @apply self-end text-[14px] leading-[17px] font-medium;
+}
+
+.service-card__image {
+  @apply relative w-full h-40 my-3 object-contain;
+}
+
+.service-card__icon-container {
+  @apply flex group-hover:invisible w-full justify-between text-grey;
+}
+
+.service-card__icon {
+  @apply flex flex-col justify-center items-center gap-2;
+}
+
+.service-card__icon-text {
+  @apply text-[14px] leading-[17px];
+}
+
+.service-card__btn-container {
+  @apply hidden group-hover:flex absolute bottom-0 w-full z-10;
+}
+/* END: service Card styles */
 
 
 /* body {

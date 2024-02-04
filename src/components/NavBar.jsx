@@ -3,6 +3,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import logo from '../public/assets/images/WAPJA-sm.png';
 import Link from "next/link";
+import CustomButtom from "./CustomButton";
 
 const NavBar = () => {
   const { data: session } = useSession();
@@ -11,46 +12,51 @@ const NavBar = () => {
   if(!session) {
     return (
       <header className="w-full absolute z-10">
-        <nav className="max-w-[1440px] mx-auto flex justify-between items-center sm:px-16 px-6 py-4">
+        <nav className="max-w-[1440px] mx-auto flex justify-between items-center sm:px-16 px-3 py-4">
 
           <Link href="/" className="flex gap-1">
-            <Image src={logo} alt="My-Services" width={30} height={30}/>
+            <Image src={logo} alt="My-Services" width={25} height={25}/>
             <p className='font-semibold text-center items-center flex px-1'>My Services</p>
           </Link>
-          <button className='bg-blue-600 text-white px-3 py-1 rounded-md font-normal 
-            hover:bg-blue-300 hover:text-black hover:border-blue-600 border'
-              onClick={()=> signIn()} >LogIn
-          </button>
-
+          <CustomButtom 
+            title="Sign In"
+            btnType="button"
+            containerStyles="bg-primary-blue text-white rounded-full"
+            handleClick={signIn}
+          />
        </nav>
       </header>
     )
-  }
-
-  return (
-    <div className='flex justify-between px-4 py-2 bg-slate-200 flex-grow'>
+  } else {
+    return (
+      <header className="w-full absolute z-10">
       { session?.user && 
-      <>
+      <nav className="max-w-[1440px] mx-auto flex justify-between items-center sm:px-16 px-3 py-4">
+
         <Link href="/" className="flex gap-1">
           <Image src={logo} alt="My-Services" width={30} height={30}/>
           <p className='font-semibold text-center items-center flex px-1'>My Services</p>
         </Link>
         <div className="flex gap-1">
-          <button className='bg-blue-600 text-white px-3 py-1 rounded-md font-normal  
-            hover:bg-blue-300 hover:text-black hover:border-blue-600 border'
-              onClick={()=> signOut()} >LogOut
-          </button>
-          <Image src={session.user.image}
-            alt='Profile'
-            width={37}
-            height={37}
-            className='rounded-full'
-          />
+        <CustomButtom 
+          title="Log Out"
+          btnType="button"
+          containerStyles="bg-primary-blue text-white rounded-full"
+          handleClick={signOut}
+        />
+        <Image src={session.user.image}
+          alt='Profile'
+          width={37}
+          height={37}
+          className='rounded-full'
+        />
         </div>
-      </>
-      } 
-    </div>
-  )
+     </nav>
+
+    }
+    </header>
+    )
+  }
 
 }
 
