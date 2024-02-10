@@ -1,9 +1,10 @@
 'use client';
 import React, { useState } from 'react';
 import CustomButtom from './CustomButton';
+import Image from 'next/image';
 
 const ServiceCard1 = ({service}) => {
-  const {name, description, duration, price, category} = service;
+  const {name, description, duration, price, category, picturePath} = service;
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -11,44 +12,42 @@ const ServiceCard1 = ({service}) => {
       <div className='service-card__content'>
         <h2 className='service-card__content-title'>{name}</h2>
       </div>
-      <p className='flex mt-6 text-[24px] font-extrabold'>
-        <span className='Self-start font-medium text-[14px]'>$</span>
+      <p className='service-card__price'>
+        <span className='service-card__price-dollar'>$ </span>
         {price}
+        <span className='service-card__price-session'>/ Sesion</span>
       </p>
 
-      <div className='relative w-full h-40 my-3 object-contain'>
-        {/* <Image 
-          src={generateCarImageUrl(car)}
-          alt='car model'
-          fill
+      <div className='service-card__image border border-slate-400'>
+        { picturePath &&
+        <Image 
+          src={`/images/${picturePath}`}
+          alt={name}
+          width={200}
+          height={100}
           priority
-          className='object-contain'
-        /> */}
+          className='object-fill h-full w-full'
+        /> 
+        }
       </div>
 
       <div className='relative flex w-full mt-2'>
-        <div className='flex group-hover:invisible w-full justify-between text-gray'>
-          <div className='flex flex-col justify-center items-center gap-2'>
-            {/* <Image src='/steering-wheel.svg' width={20} height={20} alt='steering wheel' /> */}
-            <p className='text-[14px]'>
+        <div className='service-card__icon-container'>
+          <div className='service-card__icon'>
+            <Image src='/clock.svg' width={20} height={20} alt='steering wheel' />
+            <p className='text-[14px] leading-[17px] font-bold'>
               {duration}
-              <span className='self-end font-medium text-[14px]'>/Min.</span>
+              <span className='self-end font-bold text-[14px]'> Min.</span>
             </p>
           </div>
 
-          <div className='flex flex-col justify-center items-center gap-2'>
+          <div className='service-card__icon'>
             {/* <Image src='/tire.svg' width={20} height={20} alt='tire' /> */}
             <p className='text-[14px]'>
               {category}
             </p>
           </div>
 
-          {/* <div className='flex flex-col justify-center items-center gap-2'>
-            <Image src='/gas.svg' width={20} height={20} alt='gas' />
-            <p className='text-[14px]'>
-              {city_mpg} MPG
-            </p>
-          </div> */}
         </div>
         <div className='service-card__btn-container'>
           <CustomButtom 
@@ -60,7 +59,6 @@ const ServiceCard1 = ({service}) => {
           />
         </div>
       </div>
-
 
     </div>
   )

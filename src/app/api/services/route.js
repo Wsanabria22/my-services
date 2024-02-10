@@ -17,9 +17,9 @@ export async function GET () {
 
 export async function POST(req, res) {
   try {
-    const {name, description, duration, price} = await req.json();
+    const {name, description, duration, price, picturePath} = await req.json();
     await connectToDB();
-    const newService = new Service({ name, description, duration, price });
+    const newService = new Service({ name, description, duration, price, picturePath });
     const savedService = await newService.save();
     return NextResponse.json(savedService, { status: 201 });
   } catch (error) {

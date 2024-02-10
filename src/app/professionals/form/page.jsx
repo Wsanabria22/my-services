@@ -16,6 +16,7 @@ const FormProfessional = () => {
     title: "",
     picturePath:"",
     picture: "",
+    pictureLoaded: false,
   })
 
   const getProfessional = async () => {
@@ -23,8 +24,6 @@ const FormProfessional = () => {
       const response = await fetch('/api/professionals/'+params.id);
       const dataProfessional = await response.json();
       setProfessional(dataProfessional);
-      // const picture = require(professional.picturePath);
-      // setProfessional((prevState)=>({...prevState, picture:prevState.picturePath}))
     } catch (error) {
       console.log('Failed to fetch professional information', error)
     }
@@ -65,17 +64,20 @@ const FormProfessional = () => {
 
   const handleChange = (e) => {
     setProfessional((prevState)=>({...prevState, [e.target.name]: e.target.value}))
-    if(e.target.name === 'picture') {
-      loadPicture(e.target.files[0]);
-    }
   };
 
-  const loadPicture = (pictureFile) => {
+  const handlePicture = async (e) => {
+     console.log('cargando archivo',e.target.files[0]);
+     await loadPicture(e.target.files[0]);
+     setProfessional((prevState)=>({...prevState, pictureLoaded: true}))
+  };
+
+  const loadPicture = async (pictureFile) => {
     if(pictureFile) {
       const formData = new FormData();
       formData.append("image", pictureFile);
       console.log(formData);
-      fetch('/api/pictures',{
+      await fetch('/api/pictures',{
         method:"POST",
         body: formData,
         // headers:{"Content-Type": "multipart/form-data"}
@@ -146,7 +148,7 @@ const FormProfessional = () => {
       </div>
       <hr className="bg-blue-300"></hr>
       <div className="bg-white w-full px-4 py-2"> 
-      <form className='bg-white p-5 grid grid-cols-8 w-full ap-4 border border-slate-100' onSubmit={handleSubmit}>
+      <form className='bg-white p-5 grid grid-cols-8 w-full gap-4 border border-slate-100' onSubmit={handleSubmit}>
         <div className='col-span-6'>
           <div className="flex flex-col w-full">
             <label className="block">
@@ -208,16 +210,30 @@ const FormProfessional = () => {
             </label> 
             <input type='file' name='picture' placeholder='Fotografia / imagen...'
               className="invalid:border-red-500 bg-slate-50 text-sm border rounded border-slate-200 px-2 py-1"  
-              onChange={handleChange} value={professional.picture}>
+              onChange={(e)=> { 
+                  handleChange(e);
+                  handlePicture(e);
+              }} 
+              value={professional.picture}>
             </input>
           </div>
         </div>
 
         { professional.picturePath &&
+          <div className='col-span-2 h-auto w-auto m-2 border border-slate-400 mb-4'>
+            <img src={`/images/${professional.picturePath}`} 
+              alt={professional?.firstName}
+              className='object-fill h-full w-full'
+            />
+          </div>
+        }
+
+        {/* { professional.picturePath &&
           <div className='col-span-2 h-auto w-auto m-2 border mb-4 '>
             <Image src={picturePath(`./${professional.picturePath}`)} alt={professional?.firstName}/>
           </div>
-        }
+        } */}
+
         <div className='col-span-8 mt-2'>
         <hr className="bg-blue-300 border w-full"></hr>
         <div className='flex justify-between w-full mt-2'>

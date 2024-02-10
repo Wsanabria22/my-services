@@ -20,7 +20,10 @@ const ServiceSchema = new Schema({
   },
   category: {
     type: mongoose.Types.ObjectId, ref: 'Category'
-  }
+  },
+  picturePath: {
+    type: String
+  },
 }, {
   timestamps: true,
 }

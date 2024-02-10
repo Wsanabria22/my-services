@@ -10,8 +10,7 @@ export async function POST(req, res) {
     const bytes = await image.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const filePath = path.join('./public/images', image.name);
-    console.log(filePath)
-    await writeFile(filePath, buffer);
+    const promise = await writeFile(filePath, buffer);
     return NextResponse.json({imagePath: `${image.name}`},{status: 200})
   } catch (error) {
     console.log('Failed to load professional picture', error.message)    

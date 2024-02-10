@@ -102,7 +102,7 @@
 
 /* START: service Card styles */
 .service-card {
-  @apply flex flex-col p-6 justify-center items-start text-black-100 bg-primary-blue-100 hover:bg-white hover:shadow-md rounded-3xl;
+  @apply flex flex-col px-3 py-6 justify-center items-start text-black-100 bg-primary-blue-100 hover:bg-white hover:shadow-md rounded-3xl;
 }
 
 .service-card__content {
@@ -113,20 +113,20 @@
   @apply text-[22px] leading-[26px] font-bold capitalize;
 }
 
-.srvserviceice-card__price {
-  @apply flex mt-6 text-[32px] leading-[38px] font-extrabold;
+.service-card__price {
+  @apply flex mt-6 text-[24px] font-extrabold;
 }
 
 .service-card__price-dollar {
-  @apply self-start text-[14px] leading-[17px] font-semibold;
+  @apply self-start text-[14px] leading-[17px] font-bold;
 }
 
-.service-card__price-day {
-  @apply self-end text-[14px] leading-[17px] font-medium;
+.service-card__price-session {
+  @apply self-end text-[14px] leading-[17px] font-bold;
 }
 
 .service-card__image {
-  @apply relative w-full h-40 my-3 object-contain;
+  @apply relative w-full h-52 my-3 object-contain;
 }
 
 .service-card__icon-container {
