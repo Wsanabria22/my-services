@@ -7,7 +7,7 @@ import CustomButtom from "./CustomButton";
 
 const NavBar = () => {
   const { data: session } = useSession();
-  console.log('Session',session);
+  // console.log('Session',session);
 
   if(!session) {
     return (

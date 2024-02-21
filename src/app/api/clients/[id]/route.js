@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request, {params}) {
   try {
+    console.log('params', params)
     await connectToDB();
     const client = await Client.findById(params.id);
     if (!client) return NextResponse.json({message:'Client not found'}, {status:404});

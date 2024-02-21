@@ -2,9 +2,10 @@
 import React, { useState } from 'react';
 import CustomButtom from './CustomButton';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const ServiceCard1 = ({service}) => {
-  const {name, description, duration, price, category, picturePath} = service;
+  const {name, description, duration, price, category, picturePath, _id} = service;
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -50,13 +51,16 @@ const ServiceCard1 = ({service}) => {
 
         </div>
         <div className='service-card__btn-container'>
+        <Link href={"/appointments/"+_id} className="flex gap-1 w-full">
           <CustomButtom 
-            title='View More'
+            title='Agendar Sesion'
             containerStyles="w-full py-[16px] rounded-full bg-primary-blue"
             textStyles="text-white text-[14px] leading-[17px] font-bold"
             rightIcon="/right-arrow.svg"
             handleClick={() => setIsOpen(true)}
+            className="w-full"
           />
+          </Link>
         </div>
       </div>
 
