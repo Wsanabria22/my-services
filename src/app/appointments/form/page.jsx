@@ -7,9 +7,9 @@ const FormAppointment = () => {
   const router = useRouter();
   const params = useParams();
   const { data: session } = useSession();
-  console.log('Session',session);
 
   const [service, setService] = useState({
+    _id: '',
     name: '',
     description: '',
     duration: 0,
@@ -21,18 +21,26 @@ const FormAppointment = () => {
   const [ professionals, setProfessionals ] = useState([])
 
   const [appointment, setAppointment] = useState({
+    user:"",
+    client:"",
+    service:"",
+    appointment:"",
+    quantity: 1,
+    appointmentStatus: "Created",
     firstName:"",
     lastName:"",
-    idNumber:"",
     celPhone:"",
-    address:"",
     email:"" ,
     _idProfessional:"",
     professionalName: "",
     picturePath:"",
-    dateAt: Date.now(),
+    serviceDate: Date.now,
+    idxStartHour: 0,
+    idxFinalHour: 0,
     startHour: "",
     finalHour: "",
+    journalStatus: "busy",
+    journalDate: Date.now,
   })
 
   const [dayHours, setDayHours ] = useState([ 
@@ -57,6 +65,7 @@ const FormAppointment = () => {
       const response = await fetch('/api/services/'+params.id)
       const dataService = await response.json()
       setService(dataService)
+      setAppointment((prevState) => ({...prevState, service: dataService._id}));
     } catch (error) {
       console.log('Failed to fetch service information',error)
     }
@@ -77,17 +86,90 @@ const FormAppointment = () => {
       const response = await fetch('/api/client/'+session.user.email);
       const dataClient = await response.json();
       console.log(dataClient)
-      if (dataClient[0]) setAppointment(dataClient[0])
-      else setAppointment((prevState)=>({...prevState, firstName: session.user.name,
-        lastName: session.user.name,
-        email: session.user.email,
+      if (dataClient[0]) {
+        setAppointment((prevState)=>({...prevState, 
+          user: session.user.name,
+          client: dataClient[0]._id,
+          firstName: dataClient[0].firstName,
+          lastName: dataClient[0].lastName,
+          email: dataClient[0].email,
+          celPhone: dataClient[0].celPhone,
+          newUser: false,
+          }))
+      } else { 
+          setAppointment((prevState)=>({...prevState, 
+            user: session.user.name,
+            firstName: session.user.name,
+            lastName: session.user.name,
+            email: session.user.email,
+            newUser: true,
         }))
+      }
     } catch (error) {
       console.log('Failed to fetch client information', error)
     }
   };
 
-  const handleSubmit = () => {};
+  const createClient = async () => {
+    try {
+      const response = await fetch('/api/clients', {
+        method: 'POST',
+        body: JSON.stringify(appointment),
+        headers: {"Content-Type" : "application/json"}
+      })
+      if(response.ok) return await response.json()
+      else return false;
+    } catch (error) {
+      console.log('Failed to create client', error)
+    }
+  };
+
+  const createAppointment = async () => {
+    try {
+      const response = await fetch('/api/appointments', {
+        method: 'POST',
+        body: JSON.stringify(appointment),
+        headers: {"Content-Type" : "application/json"}
+      })
+      if(response.ok) return await response.json()
+      else return false;
+    } catch (error) {
+      console.log('Failed to create appointment', error);
+    }
+  };
+
+  const createJournal = async () => {
+    try {
+      const response = await fetch('/api/journals', {
+        method: 'POST',
+        body: JSON.stringify(appointment),
+        headers: {"Content-Type" : "application/json"}
+      })
+      if(response.ok) return await response.json()
+      else return false;
+    } catch (error) {
+      console.log('Failed to create journal', error);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if(appointment.newUser) {
+        const newClient = await createClient();
+        setAppointment((prevState) => ({...prevState, client: newClient._id}));
+      }
+      const newAppointment =  await createAppointment()
+      if(newAppointment) {
+        const journalDate = appointment.serviceDate;
+        setAppointment((prevState) => ({...prevState, 
+            appointment: newAppointment._id, journalDate: journalDate}));
+      }
+
+    } catch (error) {
+      console.log('Failed to create client', error)
+    }
+  };
 
   const handleDelete = () => {};
 
@@ -96,15 +178,22 @@ const FormAppointment = () => {
   const handleChange = (e) => {
     if(e.target.name === "startHour") {
       const indexStarHour = dayHours.indexOf(e.target.value);
-      console.log((parseInt(indexStarHour) + parseInt(Math.ceil(service.duration / 15))), dayHours[(e.target.value + Math.ceil(service.duration / 15))]);
-      const finalHour = dayHours[parseInt(indexStarHour) + parseInt(Math.ceil(service.duration / 15))];
-      setAppointment((prevState)=>({...prevState, [e.target.name]: e.target.value, "finalHour": finalHour}))
+      const indexFinalHour = parseInt(indexStarHour) + parseInt(Math.ceil(service.duration / 15));
+      console.log(indexFinalHour, dayHours[indexFinalHour]);
+      const finalHour = dayHours[indexFinalHour];
+      setAppointment((prevState)=>({...prevState, 
+          [e.target.name]: e.target.value, 
+          finalHour: finalHour,
+          idxStartHour: indexStarHour,
+          idxFinalHour: indexFinalHour-1,
+        }))
     } else if (e.target.name === "_idProfessional") {
       const indexProfessional = professionals.findIndex((professional => professional._id === e.target.value))
       setAppointment((prevState)=>(
         {...prevState, [e.target.name]: e.target.value, 
-          "picturePath": professionals[indexProfessional].picturePath,
-          "professionalName": professionals[indexProfessional].firstName+" "+professionals[indexProfessional].lastName
+          professional: e.target.value,
+          picturePath: professionals[indexProfessional].picturePath,
+          professionalName: professionals[indexProfessional].firstName+" "+professionals[indexProfessional].lastName
         }))
     } else setAppointment((prevState)=>({...prevState, [e.target.name]: e.target.value}))
   };
@@ -116,6 +205,7 @@ const FormAppointment = () => {
       getProfessional();
     }
     if(session) {
+      console.log('Session',session);
       getClient();
     }
     else signIn();
@@ -224,9 +314,9 @@ const FormAppointment = () => {
                   Fecha del Servicio
                 </span>    
               </label> 
-              <input type='date' name='dateAt' placeholder='Fecha del Servicio...'
+              <input type='date' name='serviceDate' placeholder='Fecha del Servicio...'
                 className="invalid:border-red-500 bg-slate-50 text-sm border rounded border-slate-200 px-2 py-1 shadow-md"  
-                onChange={handleChange} value={appointment.dateAt}
+                onChange={handleChange} value={appointment.serviceDate}
                 required>
               </input>
             </div>

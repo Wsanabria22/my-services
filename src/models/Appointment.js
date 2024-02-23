@@ -2,8 +2,7 @@ import mongoose, { Schema, model, models } from 'mongoose';
 
 const AppointmentSchema = new Schema({
   user: {
-    type: mongoose.Types.ObjectId, 
-    ref: 'User',
+    type: String, 
     required: true,
   },
   client:{
@@ -33,19 +32,18 @@ const AppointmentSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  startHour: {
+  idxStartHour: {
     type: String,
     required: true,
   },
-  finalHour: {
+  idxFinalHour: {
     type: String,
     required: true,
-  },
-  createAt: {
-    type: Date,
-    default: Date.now,
-  },
+  }
+},
+{
+  timestamps: true,
 });
 
-const Appointment = models.Appointment || model('Date', AppointmentSchema);
+const Appointment = models.Appointment || model('Appointment', AppointmentSchema);
 export default Appointment;
