@@ -15,9 +15,9 @@ export async function GET(req, res) {
 
 export async function POST(req, rest) {
   try {
-    const {user, client, service, professional, serviceDate, idxStartHour, idxFinalHour} = await req.json();
+    const {user, client, service, quantity, professional, serviceDate, idxStartHour, idxFinalHour} = await req.json();
     await connectToDB();
-    const newAppointment = await new Appointment({user, client, service, professional, serviceDate, idxStartHour, idxFinalHour});
+    const newAppointment = await new Appointment({user, client, service, quantity, professional, serviceDate, idxStartHour, idxFinalHour});
     const appointment = await newAppointment.save();
     return NextResponse.json(appointment, {status: 201})
   } catch (error) {

@@ -137,8 +137,7 @@ const FormClient = () => {
             </label> 
             <input type='text' name='idNumber' placeholder='No de identificacion...'
               className="invalid:border-red-500 bg-slate-50 text-sm border rounded border-slate-200 px-2 py-1"  
-              onChange={handleChange} value={client.idNumber}
-              required>
+              onChange={handleChange} value={client.idNumber}>
             </input>
           </div>
 
@@ -163,8 +162,7 @@ const FormClient = () => {
             </label> 
             <input type='text' name='address' placeholder='Direccion...'
               className="invalid:border-red-500 bg-slate-50 text-sm border rounded border-slate-200 px-2 py-1"  
-              onChange={handleChange} value={client.address}
-              required>
+              onChange={handleChange} value={client.address}>
             </input>
           </div>
 

@@ -51,9 +51,9 @@ const ServiceCard1 = ({service}) => {
 
         </div>
         <div className='service-card__btn-container'>
-        <Link href={"/appointments/"+_id} className="flex gap-1 w-full">
+        <Link href={"/appointments/front/"+_id} className="flex gap-1 w-full">
           <CustomButtom 
-            title='Agendar Sesion'
+            title='Agendar el Servicio'
             containerStyles="w-full py-[16px] rounded-full bg-primary-blue"
             textStyles="text-white text-[14px] leading-[17px] font-bold"
             rightIcon="/right-arrow.svg"

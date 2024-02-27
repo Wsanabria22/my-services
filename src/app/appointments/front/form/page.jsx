@@ -35,6 +35,7 @@ const FormAppointment = () => {
     professionalName: "",
     picturePath:"",
     serviceDate: Date.now,
+    indexHour: 0,
     idxStartHour: 0,
     idxFinalHour: 0,
     startHour: "",
@@ -131,18 +132,29 @@ const FormAppointment = () => {
         body: JSON.stringify(appointment),
         headers: {"Content-Type" : "application/json"}
       })
-      if(response.ok) return await response.json()
-      else return false;
+      if(response.ok) {
+        const newAppointment = await response.json();
+        setAppointment((prevState) => ({...prevState, 
+            appointment: newAppointment._id, journalDate: appointment.serviceDate}));
+        return newAppointment 
+      } else return false;
     } catch (error) {
       console.log('Failed to create appointment', error);
     }
   };
 
-  const createJournal = async () => {
+  const createJournal = async (newAppointment,idxHour) => {
     try {
+      const dataJournal = {
+        professional: appointment._idProfessional, 
+        journalDate: appointment.serviceDate,
+        indexHour: idxHour,
+        appointment: newAppointment._id,
+        journalStatus: appointment.journalStatus,
+      };
       const response = await fetch('/api/journals', {
         method: 'POST',
-        body: JSON.stringify(appointment),
+        body: JSON.stringify(dataJournal),
         headers: {"Content-Type" : "application/json"}
       })
       if(response.ok) return await response.json()
@@ -161,9 +173,10 @@ const FormAppointment = () => {
       }
       const newAppointment =  await createAppointment()
       if(newAppointment) {
-        const journalDate = appointment.serviceDate;
-        setAppointment((prevState) => ({...prevState, 
-            appointment: newAppointment._id, journalDate: journalDate}));
+        for (let idxHour = appointment.idxStartHour; idxHour <= appointment.idxFinalHour; idxHour++) {
+          setAppointment((prevState) => ({...prevState, indexHour: idxHour}));
+          const newJournal = await createJournal(newAppointment,idxHour); 
+        }
       }
 
     } catch (error) {
@@ -173,7 +186,10 @@ const FormAppointment = () => {
 
   const handleDelete = () => {};
 
-  const handleBack = () => {};
+  const handleBack = () => {
+    router.back()
+    router.refresh()
+  };
 
   const handleChange = (e) => {
     if(e.target.name === "startHour") {
@@ -199,13 +215,11 @@ const FormAppointment = () => {
   };
 
   useEffect(() => {
-    console.log(params);
     if(params.id) {
       getService();
       getProfessional();
     }
     if(session) {
-      console.log('Session',session);
       getClient();
     }
     else signIn();
@@ -216,7 +230,7 @@ const FormAppointment = () => {
     <main className='border shadow-md mx-2'>
       <section className='mt-12 padding-x padding-y max-width'>
         <div className='flex rounded-sm border border-slat-600 bg-slate-50 home__text-container'>
-          <h1 className='text-3xl font-extrabold'>Agendamiento Cita para Sesion</h1>
+          <h1 className='text-3xl font-extrabold'>Agendamiento Cita para Servicios</h1>
           <div className='flex gap-4 justify-start items-center w-full'>
             { service.picturePath &&
               <div className='h-[60px] w-[100px] m-2 border border-slate-400 mb-4'>

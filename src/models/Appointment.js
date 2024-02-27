@@ -28,7 +28,7 @@ const AppointmentSchema = new Schema({
     type: String,
     default: "Processing",
   },
-  dateAt: {
+  serviceDate: {
     type: Date,
     default: Date.now,
   },
