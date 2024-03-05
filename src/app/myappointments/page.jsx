@@ -2,6 +2,7 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import AppointmentCard from '../../components/AppointmentCard';
 
 const MyAppointments = () => {
   const router = useRouter();
@@ -9,13 +10,13 @@ const MyAppointments = () => {
   const { data: session } = useSession()
 
   const [client, setClient] = useState({_id:"", firstName:""});
-  const [clientAppointments, setClientAppointments] = useState({})
+  const [clientAppointments, setClientAppointments] = useState([])
 
   const getClient = async () => {
     try {
       const response = await fetch('/api/client/'+session.user.email);
       const dataClient = await response.json();
-      console.log(dataClient)
+      console.log('Client',dataClient)
       if (dataClient[0]) {
         setClient(dataClient[0]);
         return dataClient[0]
@@ -32,6 +33,7 @@ const MyAppointments = () => {
     try {
       const response = await fetch('/api/myappointments/'+dataClient._id);
       const dataAppointments = await response.json();
+      console.log('dataAppointments', dataAppointments);
       setClientAppointments(dataAppointments);
     } catch (error) {
       console.log('Failed to fetch client appointments information', error)
@@ -62,7 +64,10 @@ const MyAppointments = () => {
       <hr className="bg-blue-300 border w-auto"></hr>
       <section className="bg-white col-span-8 padding-x padding-y max-width">
         <div className='bg-white px-5 py-2 w-full flex flex-wrap gap-4'>
-
+        { clientAppointments && clientAppointments?.map((appointment) => (
+          <AppointmentCard key={appointment._id} appointment={appointment} />
+          ))
+        }
         </div>
       </section>
     </main>

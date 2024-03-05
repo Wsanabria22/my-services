@@ -30,7 +30,7 @@ export default async function Home() {
       </div>
 
       <section>
-          <div className='home__service-wrapper'>
+          <div className='home__service-wrapper px-4'>
             {
               allServices && allServices?.map((service) => (
               <ServiceCard1 key={service._id} service={service} />

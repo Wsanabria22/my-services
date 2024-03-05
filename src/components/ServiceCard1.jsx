@@ -9,7 +9,7 @@ const ServiceCard1 = ({service}) => {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <div className='service-card group'>
+    <div className='service-card group shadow-md'>
       <div className='service-card__content'>
         <h2 className='service-card__content-title'>{name}</h2>
       </div>
