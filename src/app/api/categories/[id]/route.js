@@ -22,7 +22,7 @@ export async function PUT(request, {params}) {
     if(!category) return NextResponse.json({message:'Category not found'}, {status:404})
     return NextResponse.json(category, {message:'Category updated successfully'}, {status:201})
   } catch (error) {
-    console.log('Failed to get category information', error);
+    console.log('Failed to update category information', error);
     return NextResponse.json({message:'Failed to update category information', error:error.message}, {status:400})
   }
 };

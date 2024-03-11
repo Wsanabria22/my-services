@@ -61,14 +61,12 @@ const MyAppointments = () => {
         </div>
       </section>
 
-      <hr className="bg-blue-300 border w-auto"></hr>
-      <section className="bg-white col-span-8 padding-x padding-y max-width">
-        <div className='bg-white px-5 py-2 w-full flex flex-wrap gap-4'>
+      <hr className="bg-blue-300 border w-auto padding-x"></hr>
+      <section className="bg-white flex flex-wrap gap-3 padding-x padding-y max-width">
         { clientAppointments && clientAppointments?.map((appointment) => (
           <AppointmentCard key={appointment._id} appointment={appointment} />
           ))
         }
-        </div>
       </section>
     </main>
   )

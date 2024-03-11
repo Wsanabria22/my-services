@@ -32,7 +32,7 @@ const FormAppointment = () => {
     celPhone:"",
     email:"" ,
     _idProfessional:"",
-    professionalName: "",
+    professionalName:"",
     picturePath:"",
     serviceDate: Date.now,
     indexHour: 0,
@@ -43,6 +43,8 @@ const FormAppointment = () => {
     journalStatus: "busy",
     journalDate: Date.now,
   })
+
+  const [journals, setJournals] = useState([]);
 
   const [dayHours, setDayHours ] = useState([ 
     "7:00am","7:15am","7:30am","7:45am",
@@ -65,20 +67,24 @@ const FormAppointment = () => {
     try {
       const response = await fetch('/api/services/'+params.id)
       const dataService = await response.json()
+      console.log('dataService',dataService)
       setService(dataService)
       setAppointment((prevState) => ({...prevState, service: dataService._id}));
     } catch (error) {
-      console.log('Failed to fetch service information',error)
+      console.log('Failed to fetch service information',error);
     }
   };
 
-  const getProfessional = async () => {
+  const getProfessionals = async () => {
     try {
       const response = await fetch('/api/professionals');
       const dataProfessionals = await response.json();
+      console.log('dataProfessionals', dataProfessionals);
       setProfessionals(dataProfessionals);
+      return dataProfessionals;
     } catch (error) {
-      console.log('Failed to fetch professional information', error)
+      console.log('Failed to fetch professional information', error);
+      return false;
     }
   };
 
@@ -86,7 +92,7 @@ const FormAppointment = () => {
     try {
       const response = await fetch('/api/client/'+session.user.email);
       const dataClient = await response.json();
-      console.log(dataClient)
+      console.log('dataClient',dataClient)
       if (dataClient[0]) {
         setAppointment((prevState)=>({...prevState, 
           user: session.user.name,
@@ -108,6 +114,45 @@ const FormAppointment = () => {
       }
     } catch (error) {
       console.log('Failed to fetch client information', error)
+    }
+  };
+
+  const getAppointment = async (dataProfessionals) => {
+    try {
+      const response = await fetch('/api/appointments/'+params.id1);
+      const appointmentData = await response.json();
+      console.log('appointmentData',appointmentData);
+      const idxFinalHour = parseInt(appointmentData.idxFinalHour);
+      const idxStartHour = parseInt(appointmentData.idxStartHour);
+      const finalHour = dayHours[idxFinalHour];
+      const startHour = dayHours[idxStartHour];
+      const indexProfessional = dataProfessionals.findIndex((professional => professional._id === appointmentData.professional));
+      setAppointment((prevState)=>({...prevState, 
+        finalHour: finalHour,
+        startHour: startHour,
+        idxFinalHour: idxFinalHour,
+        idxStartHour: idxStartHour,
+        serviceDate: appointmentData.serviceDate.slice(0,10),
+        _idProfessional: appointmentData.professional,
+        professional: appointmentData.professional,
+        picturePath: dataProfessionals[indexProfessional].picturePath,
+        professionalName: dataProfessionals[indexProfessional].firstName+" "+dataProfessionals[indexProfessional].lastName,
+
+      }))
+      getJournals();
+    } catch (error) {
+      console.log('Failed to fetch appointment information', error)
+    }
+  };
+
+  const getJournals = async () => {
+    try {
+      const response = await fetch('/api/journals/'+params.id1);
+      const journalData = await response.json();
+      console.log('journalData',journalData);
+      setJournals(journalData);
+    } catch (error) {
+      console.log('Failed to fetch journals information',error)
     }
   };
 
@@ -135,11 +180,29 @@ const FormAppointment = () => {
       if(response.ok) {
         const newAppointment = await response.json();
         setAppointment((prevState) => ({...prevState, 
-            appointment: newAppointment._id, journalDate: appointment.serviceDate}));
+          appointment: newAppointment._id, journalDate: appointment.serviceDate}));
         return newAppointment 
       } else return false;
     } catch (error) {
       console.log('Failed to create appointment', error);
+    }
+  };
+
+  const updateAppointment = async () => {
+    try {
+      const response = await fetch('/api/appointment'+params.id1, {
+        method: 'PUT',
+        body: JSON.stringify(appointment),
+        headers: {"Content-Type" : "application/json"}
+      });
+      if(response.ok) {
+        const newAppointment = await response.json();
+        setAppointment((prevState) => ({...prevState, journalDate: appointment.serviceDate}));
+        return newAppointment 
+      } else return false;
+
+    } catch (error) {
+      console.log('Failed to update an Appointment', error);
     }
   };
 
@@ -171,16 +234,20 @@ const FormAppointment = () => {
         const newClient = await createClient();
         setAppointment((prevState) => ({...prevState, client: newClient._id}));
       }
-      const newAppointment =  await createAppointment()
-      if(newAppointment) {
-        for (let idxHour = appointment.idxStartHour; idxHour <= appointment.idxFinalHour; idxHour++) {
-          setAppointment((prevState) => ({...prevState, indexHour: idxHour}));
-          const newJournal = await createJournal(newAppointment,idxHour); 
+      if(!params.id1) {
+        const newAppointment =  await createAppointment()
+        if(newAppointment) {
+          for (let idxHour = appointment.idxStartHour; idxHour <= appointment.idxFinalHour; idxHour++) {
+            setAppointment((prevState) => ({...prevState, indexHour: idxHour}));
+            const newJournal = await createJournal(newAppointment,idxHour); 
+          }
         }
+      } else {
+        const dataAppointment = await updateAppointment()
       }
 
     } catch (error) {
-      console.log('Failed to create client', error)
+      console.log('Failed to create or update an appointmet', error)
     }
   };
 
@@ -214,15 +281,17 @@ const FormAppointment = () => {
     } else setAppointment((prevState)=>({...prevState, [e.target.name]: e.target.value}))
   };
 
-  useEffect(() => {
-    if(params.id) {
-      getService();
-      getProfessional();
-    }
-    if(session) {
-      getClient();
-    }
-    else signIn();
+  useEffect(() => {  
+    const dataFetch = async () => 
+      { 
+        const dataProfessionals = await getProfessionals();
+        await getService();
+        if(session) await getClient();
+        // else signIn();
+        if(params.id1) await getAppointment(dataProfessionals);
+      }
+
+    dataFetch();
   },[])
 
 
@@ -316,9 +385,14 @@ const FormAppointment = () => {
                 className="invalid:border-red-500 bg-slate-50 text-sm border rounded border-slate-200 px-2 py-1 shadow-md"  
                 onChange={handleChange} required>
                 <option value="Seleccione..." selected>Seleccione...</option>
-                { professionals?.map( (professional, index) => <option 
-                  key={index}
-                  value={professional._id}>{professional.firstName+" "+professional.lastName}</option> ) }
+                { professionals?.map( (professional, index) => 
+                  <option 
+                    // selected={ appointment.professionalName && (professional.firstName+" "+professional.lastName) === appointment.professionalName}
+                    key={index}
+                    value={professional._id}>{professional.firstName+" "+professional.lastName}
+                  </option>
+                  )
+                }
               </select>
             </div>
 
@@ -368,10 +442,10 @@ const FormAppointment = () => {
             <button type='submit'
               className='bg-blue-600 text-white md:font-semibold sm:px-3 sm:py-1.5 hover:bg-blue-300 hover:text-black
               text-sm hover:border-blue-600 border rounded-md font-normal px-2 py-1'>
-              { !params.id ? 'Crear' : 'Modificar'}
+              { !params.id1 ? 'Crear' : 'Modificar'}
             </button>
             {
-              params.id &&
+              params.id1 &&
               <button type='button' onClick={handleDelete}
                 className='bg-red-600 text-white md:font-semibold sm:px-3 sm:py-1.5 hover:bg-red-300 hover:text-black
                 text-sm hover:border-red-600 border rounded-md font-normal px-2 py-1'>

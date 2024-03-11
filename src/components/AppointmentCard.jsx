@@ -1,7 +1,9 @@
+import Link from 'next/link';
 import React, { useState } from 'react'
 
 const AppointmentCard = ({appointment}) => {
-
+  const {_id: _id1} = appointment;
+  const {_id } = appointment.service;
   const [dayHours, setDayHours ] = useState([ 
     "7:00am","7:15am","7:30am","7:45am",
     "8:00am","8:15am","8:30am","8:45am",
@@ -20,8 +22,8 @@ const AppointmentCard = ({appointment}) => {
   ]);
 
   return (
-  <div className='flex flex-col border shadow-md p-2'>
-    <section className='flex gap-4 justify-start items-center w-full'>
+  <div className='flex flex-col border shadow-md p-2 max-w-[500px]'>
+    <section className='flex gap-4 justify-start items-center'>
       { appointment.service.picturePath &&
         <div className='h-[60px] w-[100px] m-2 border bg-slate-50 border-slate-400 mb-4'>
           <img src={`/images/${appointment.service.picturePath}`}
@@ -36,9 +38,9 @@ const AppointmentCard = ({appointment}) => {
       </div>
     </section>
     <hr className="bg-blue-300 border w-auto"></hr>
-    <section className='flex p-2'>
-      <div className='flex flex-row flex-wrap gap-3 w-[60%]'>
-        <div className="flex flex-col w-[80%]">
+    <section className='flex gap-2 p-2'>
+      <div className='flex flex-row flex-wrap gap-3 w-[50%]'>
+        <div className="flex flex-col w-full">
           <label className="block">
             <span className="text-sm text-satoshi font-semibold text-gray-700">
               Profesional:
@@ -49,7 +51,7 @@ const AppointmentCard = ({appointment}) => {
           </p> 
         </div>
 
-        <div className="flex flex-col w-[40%]">
+        <div className="flex flex-col w-[50%]">
           <label className="block">
             <span className="text-sm text-satoshi font-semibold text-gray-700">
               Fecha: 
@@ -60,7 +62,7 @@ const AppointmentCard = ({appointment}) => {
           </p>
         </div>
 
-        <div className="flex flex-col w-[30%]">
+        <div className="flex flex-col w-[35%]">
           <label className="block">
             <span className="text-sm text-satoshi font-semibold text-gray-700">
               Hora: 
@@ -71,15 +73,33 @@ const AppointmentCard = ({appointment}) => {
           </p>
         </div>
       </div>
-      <div className='flex justify-center items-center w-[40%]'>
-      { appointment.professional.picturePath &&
-        <div className='h-[100px] w-[140px] m-2 border border-slate-400 mb-4'>
-          <img src={`/images/${appointment.professional.picturePath}`} 
-            alt={appointment.service?.name}
-            className='object-fill h-full w-full'
-          />
-        </div>
-      }
+      <div className='flex justify-center items-center w-[45%]'>
+        { appointment.professional.picturePath &&
+          <div className='h-full w-full m-2 border border-slate-400 mb-4'>
+            <img src={`/images/${appointment.professional.picturePath}`} 
+              alt={appointment.service?.name}
+              className='object-fill h-full w-full'
+            />
+          </div>
+        }
+      </div>
+      <div className='flex flex-col gap-3 justify-center items-center w-[15%] h-full p-2'>
+        <Link href={"/appointments/front/"+_id+"/"+_id1} className="w-full h-[35%] shadow-md border bg-green-200 rounded-md p-1 hover:bg-green-800">
+          <svg xmlns="http://www.w3.org/2000/svg" id="Filled" viewBox="0 0 24 24" className="w-full h-full text-green-600">
+            <path d="M1.172,19.119A4,4,0,0,0,0,21.947V24H2.053a4,4,0,0,0,2.828-1.172L18.224,9.485,14.515,5.776Z"/>
+            <path d="M23.145.855a2.622,2.622,0,0,0-3.71,0L15.929,4.362l3.709,3.709,3.507-3.506A2.622,2.622,0,0,0,23.145.855Z"/>
+          </svg>
+            {/* <p className='font-semibold text-center items-center flex'>Editar</p> */}
+        </Link>
+        <Link href="/myappointments" className="w-full h-[35%] shadow-md border bg-red-500 rounded-md p-1 hover:bg-red-700">
+          <svg xmlns="http://www.w3.org/2000/svg" id="Isolation_Mode" data-name="Isolation Mode" viewBox="0 0 24 24" className="w-full h-full text-red-500">
+            <path d="M23,3H18V2.5A2.5,2.5,0,0,0,15.5,0h-7A2.5,2.5,0,0,0,6,2.5V3H1V6H3V21a3,3,0,0,0,3,3H18a3,3,0,0,0,3-3V6h2ZM18,21H6V6H18Z"/>
+            <rect x="8" y="9" width="3" height="9"/>
+            <rect x="13" y="9" width="3" height="9"/>
+          </svg>
+
+            {/* <p className='font-semibold text-center items-center flex'>Editar</p> */}
+        </Link>
       </div>
     </section>
   </div>
