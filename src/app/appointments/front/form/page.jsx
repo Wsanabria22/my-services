@@ -190,7 +190,7 @@ const FormAppointment = () => {
 
   const updateAppointment = async () => {
     try {
-      const response = await fetch('/api/appointment'+params.id1, {
+      const response = await fetch('/api/appointments/'+params.id1, {
         method: 'PUT',
         body: JSON.stringify(appointment),
         headers: {"Content-Type" : "application/json"}
@@ -200,9 +200,22 @@ const FormAppointment = () => {
         setAppointment((prevState) => ({...prevState, journalDate: appointment.serviceDate}));
         return newAppointment 
       } else return false;
-
     } catch (error) {
       console.log('Failed to update an Appointment', error);
+    }
+  };
+
+  const deleteAppointment = async () => {
+    try {
+      const response = await fetch(`/api/appointments/${params.id1}`, {
+        method: 'DELETE',
+      });
+      if(response.ok) {
+        const deletedAppointment = response.json();
+        return deletedAppointment;
+      } else return false;
+    } catch (error) {
+      console.log('Failed to delete appointment information', error);
     }
   };
 
@@ -223,7 +236,19 @@ const FormAppointment = () => {
       if(response.ok) return await response.json()
       else return false;
     } catch (error) {
-      console.log('Failed to create journal', error);
+      console.log('Failed to create journals appointments', error);
+    }
+  };
+
+  const deleteJournals = async () => {
+    try {
+      const response = await fetch('/api/journals/'+params.id1,{
+        method:'DELETE',
+      })
+      if(response.ok) return await response.json()
+      else return false;
+    } catch (error) {
+      console.log('Failed to delete journals appointments', error);
     }
   };
 
@@ -243,15 +268,35 @@ const FormAppointment = () => {
           }
         }
       } else {
-        const dataAppointment = await updateAppointment()
+        const newAppointment = await updateAppointment()
+        if(newAppointment) {
+          const deletedJournal = await deleteJournals();
+          for (let idxHour = appointment.idxStartHour; idxHour <= appointment.idxFinalHour; idxHour++) {
+            setAppointment((prevState) => ({...prevState, indexHour: idxHour}));
+            const newJournal = await createJournal(newAppointment,idxHour); 
+          }
+        }
       }
-
+      handleBack();
     } catch (error) {
       console.log('Failed to create or update an appointmet', error)
     }
   };
 
-  const handleDelete = () => {};
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    if(window.confirm('Esta seguro de eliminar la cita agendada?')) {
+      try {
+        const deletedAppointment = await deleteAppointment();
+        if(deletedAppointment) {
+          const deletedJournal = deleteJournals();
+          if(deletedJournal) handleBack();
+        }
+      } catch (error) {
+        console.log('Failed to delete appointment', error);
+      }
+    }
+  };
 
   const handleBack = () => {
     router.back()

@@ -31,11 +31,11 @@ export async function PUT(request, {params}) {
 export async function DELETE(request, {params}) {
   try {
     await connectToDB();
-    const journal = await Journal.deleteMany({professional: params.id});
+    const journal = await Journal.deleteMany({appointment: params.id});
     if(!journal) return NextResponse.json({message:'Journal not found'}, {status:404})
-    return NextResponse.json(category, {message:'Journal deleted successfully'}, {status:201})
+    return NextResponse.json(journal, {message:'Journals deleted successfully'}, {status:201})
   } catch (error) {
     console.log('Failed to delete journal information', error);
-    return NextResponse.json({message:'Failed to delete journal information', error:error.message}, {status:400})
+    return NextResponse.json({message:'Failed to delete journals information', error:error.message}, {status:400})
   }
 };
