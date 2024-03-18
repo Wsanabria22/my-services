@@ -1,21 +1,43 @@
-import React from 'react';
-import { connectToDB } from '../../utils/database';
-import Category from '../../models/Category';
+'use client'
+import React, { useEffect, useState } from 'react';
+// import { connectToDB } from '../../utils/database';
+// import Category from '../../models/Category';
 import CategoryCard from '../../components/CategoryCard';
 import Link from 'next/link';
 
-const getCategories = async () => {
-  try {
-    await connectToDB();
-    const categories = await Category.find();
-    return categories;
-  } catch (error) {
-    console.log('Failed to load all categories', error);
-  }
-};
+// const getCategories = async () => {
+//   try {
+//     await connectToDB();
+//     const categories = await Category.find();
+//     return categories;
+//   } catch (error) {
+//     console.log('Failed to load all categories', error);
+//   }
+// };
 
-const Categories = async () => {
-  const allCategories = await getCategories();
+
+const Categories = () => {
+  const [allCategories, setAllCategories] = useState([])
+  // const allCategories = await getCategories();
+
+  const getCategories = async () => {
+    try {
+      const response = await fetch('/api/categories');
+      const dataCategory = await response.json();
+      setAllCategories(dataCategory);
+    } catch (error) {
+      console.log('Failed to load all categories', error);
+    }
+  };
+
+  useEffect(() => {
+    const dataFetch = async () => {
+      await getCategories();
+    }
+
+    dataFetch();
+  }, []);
+
 
   return (
     <section className='bg-slate-200 rounded-sm py-3 px-2 flex-grow'>
