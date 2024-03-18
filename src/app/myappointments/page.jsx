@@ -21,8 +21,8 @@ const MyAppointments = () => {
         setClient(dataClient[0]);
         return dataClient[0]
       } else { 
-          alert('Cliente no encontrado')
-          return false
+          alert('Cliente no tiene citas agendadas')
+          return false;
       }
     } catch (error) {
       console.log('Failed to fetch client information', error)
@@ -35,6 +35,7 @@ const MyAppointments = () => {
       const dataAppointments = await response.json();
       console.log('dataAppointments', dataAppointments);
       setClientAppointments(dataAppointments);
+      return(dataAppointments);
     } catch (error) {
       console.log('Failed to fetch client appointments information', error)
     }
@@ -45,13 +46,19 @@ const MyAppointments = () => {
       if(session) {
         console.log('Session',session);
         const dataClient = await getClient();
-        console.log('Client',client);
-        await getAppointments(dataClient);
+        if(!dataClient) { router.push('/')};
+        const appointmentList = await getAppointments(dataClient);
+        if(!appointmentList) {
+          alert('Cliente no tiene citas agendadas');
+          router.push('/')
+        }
       }
       else signIn();
     }
   fetchData();
   },[])
+
+
 
   return (
     <main className='border shadow-md mx-2'>

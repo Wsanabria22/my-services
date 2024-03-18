@@ -211,7 +211,7 @@ const FormAppointment = () => {
         method: 'DELETE',
       });
       if(response.ok) {
-        const deletedAppointment = response.json();
+        const deletedAppointment = await response.json();
         return deletedAppointment;
       } else return false;
     } catch (error) {
@@ -332,7 +332,10 @@ const FormAppointment = () => {
         const dataProfessionals = await getProfessionals();
         await getService();
         if(session) await getClient();
-        // else signIn();
+        else {
+          alert('Debe ingresar primero a la aplicacion');
+          handleBack();
+        }
         if(params.id1) await getAppointment(dataProfessionals);
       }
 

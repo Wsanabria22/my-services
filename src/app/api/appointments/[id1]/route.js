@@ -30,8 +30,9 @@ export async function PUT(request, {params}) {
 
 export async function DELETE(request, {params}) {
   try {
+    console.log('Borrando appointment de la BD')
     await connectToDB();
-    const appointment = await Appointment.findByIdAndDelete(params.id);
+    const appointment = await Appointment.findByIdAndDelete(params.id1);
     if(!appointment) return NextResponse.json({message:'Appointment not found'}, {status:404})
     return NextResponse.json(appointment, {message:'Appointment deleted successfully'}, {status:201})
   } catch (error) {

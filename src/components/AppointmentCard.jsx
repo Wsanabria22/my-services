@@ -1,7 +1,9 @@
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
 const AppointmentCard = ({appointment}) => {
+  const router = useRouter();
   const {_id: _id1} = appointment;
   const {_id } = appointment.service;
   const [dayHours, setDayHours ] = useState([ 
@@ -20,6 +22,52 @@ const AppointmentCard = ({appointment}) => {
     "7:00pm","7:15pm","7:30pm","7:45pm",
     "8:00pm","8:15pm","8:30pm","8:45pm",
   ]);
+
+  const deleteAppointment = async () => {
+    try {
+      const response = await fetch(`/api/appointments/${_id1}`, {
+        method: 'DELETE',
+      });
+      if(response.ok) {
+        const deletedAppointment = await response.json();
+        return deletedAppointment;
+      } else return false;
+    } catch (error) {
+      console.log('Failed to delete appointment information', error);
+    }
+  };
+
+  const deleteJournals = async () => {
+    try {
+      const response = await fetch('/api/journals/'+_id1,{
+        method:'DELETE',
+      })
+      if(response.ok) return await response.json()
+      else return false;
+    } catch (error) {
+      console.log('Failed to delete journals appointments', error);
+    }
+  };
+
+  const handleBack = () => {
+    router.back()
+    router.refresh()
+  };
+
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    if(window.confirm('Esta seguro de eliminar la cita agendada?')) {
+      try {
+        const deletedAppointment = await deleteAppointment();
+        if(deletedAppointment) {
+          const deletedJournal = deleteJournals();
+          if(deletedJournal) handleBack();
+        }
+      } catch (error) {
+        console.log('Failed to delete appointment', error);
+      }
+    }
+  };
 
   return (
   <div className='flex flex-col border shadow-md p-2 max-w-[500px]'>
@@ -91,7 +139,7 @@ const AppointmentCard = ({appointment}) => {
           </svg>
             {/* <p className='font-semibold text-center items-center flex'>Editar</p> */}
         </Link>
-        <Link href="/myappointments" className="w-full h-[35%] shadow-md border bg-red-500 rounded-md p-1 hover:bg-red-700">
+        <button onClick={handleDelete} className="w-full h-[35%] shadow-md border bg-red-500 rounded-md p-1 hover:bg-red-700">
           <svg xmlns="http://www.w3.org/2000/svg" id="Isolation_Mode" data-name="Isolation Mode" viewBox="0 0 24 24" className="w-full h-full text-red-500">
             <path d="M23,3H18V2.5A2.5,2.5,0,0,0,15.5,0h-7A2.5,2.5,0,0,0,6,2.5V3H1V6H3V21a3,3,0,0,0,3,3H18a3,3,0,0,0,3-3V6h2ZM18,21H6V6H18Z"/>
             <rect x="8" y="9" width="3" height="9"/>
@@ -99,7 +147,7 @@ const AppointmentCard = ({appointment}) => {
           </svg>
 
             {/* <p className='font-semibold text-center items-center flex'>Editar</p> */}
-        </Link>
+        </button>
       </div>
     </section>
   </div>
