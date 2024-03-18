@@ -1,6 +1,6 @@
 import { connectToDB } from '../../../../utils/database';
 import Appointment from '../../../../models/Appointment';
-import Professional from '../../../../models/Professional';
+import Professional from '../../../../models/professional';
 import Service from '../../../../models/Service';
 import { NextResponse } from 'next/server';
 
