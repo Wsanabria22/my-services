@@ -1,21 +1,28 @@
-import React from 'react';
-import { connectToDB } from '../../utils/database';
-import Client from '../../models/Cient';
+'use client'
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import ClientCard from '../../components/ClientCard';
 
-const getClients = async () => {
-  try {
-    await connectToDB();
-    const clients = Client.find();
-    return clients;
-  } catch (error) {
-    console.log('Failed to load Clients', error);
-  }
-};
+const Clients = () => {
+  const [allClients, setAllClients] = useState([])
 
-const Clients = async () => {
-  const allClients = await getClients();
+  const getClients = async () => {
+    try {
+      const response = await fetch('/api/clients');
+      const dataClients = await response.json();
+      setAllClients(dataClients);
+    } catch (error) {
+      console.log('Failed to load all Clients', error);
+    }
+  };
+
+  useEffect(() => {
+    const dataFetch = async () => {
+      await getClients();
+    }
+
+    dataFetch();
+  }, []);
 
   return (
     <section className='bg-slate-200 rounded-sm py-3 px-2 flex-grow'>

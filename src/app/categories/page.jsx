@@ -38,7 +38,6 @@ const Categories = () => {
     dataFetch();
   }, []);
 
-
   return (
     <section className='bg-slate-200 rounded-sm py-3 px-2 flex-grow'>
       <div className="bg-slate-100 rounded-sm px-4 py-2 flex justify-between">

@@ -1,22 +1,29 @@
-import React from 'react'
-import { connectToDB } from '../../utils/database';
-import Professional from '../../models/professional';
+'use client'
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import ProfessionalCard from "../../components/ProfessionalCard";
 
-const getProfessionals = async () => {
-  try {
-    await connectToDB();
-    const Professionals = Professional.find();
-    return Professionals;
-  } catch (error) {
-    console.log("Failed to load Professionals", error)
+const Professionals = () => {
+  const [allProfessionals, setAllProfessionals] = useState([])
+
+  const getProfessionals = async () => {
+    try {
+      const response = await fetch('/api/professionals');
+      const dataProfessionals = await response.json();
+      setAllProfessionals(dataProfessionals);
+    } catch (error) {
+      console.log("Failed to load all Professionals", error)
+    }
   }
 
-}
+  useEffect(() => {
+    const dataFetch = async () => {
+      await getProfessionals();
+    }
 
-const Professionals = async () => {
-  const allProfessionals = await getProfessionals();
+    dataFetch();
+  }, []);
+
   return (
     <section className='bg-slate-200 rounded-sm py-3 px-2 flex-grow'>
       <div className="bg-slate-100 rounded-sm px-4 py-2 flex justify-between">
